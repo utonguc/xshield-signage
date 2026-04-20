@@ -1,9 +1,10 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Monitor, Plus, Trash2, Send, RefreshCw, Copy, ChevronDown } from "lucide-react";
+import { Monitor, Plus, Trash2, Send, RefreshCw, Copy, BookOpen } from "lucide-react";
 import type { Device, Playlist } from "@/lib/api";
 import { createDevice, deleteDevice, updateDevice, pushPlaylist, regenApiKey } from "@/lib/api";
+import SetupModal from "./setup-modal";
 
 interface Props {
   initialDevices: Device[];
@@ -13,8 +14,9 @@ interface Props {
 
 export default function DevicesClient({ initialDevices, playlists, token }: Props) {
   const router   = useRouter();
-  const [devices, setDevices] = useState(initialDevices);
-  const [showAdd, setShowAdd] = useState(false);
+  const [devices, setDevices]   = useState(initialDevices);
+  const [showAdd, setShowAdd]   = useState(false);
+  const [showSetup, setShowSetup] = useState(false);
   const [newName, setNewName] = useState("");
   const [newLoc,  setNewLoc]  = useState("");
   const [loading, setLoading] = useState<string | null>(null);
@@ -54,12 +56,20 @@ export default function DevicesClient({ initialDevices, playlists, token }: Prop
 
   return (
     <div>
+      {showSetup && <SetupModal devices={devices} onClose={() => setShowSetup(false)} />}
+
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Cihazlar</h1>
-        <button onClick={() => setShowAdd(true)}
-          className="flex items-center gap-1.5 bg-brand text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-dark transition-colors">
-          <Plus size={15} /> Yeni Cihaz
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setShowSetup(true)}
+            className="flex items-center gap-1.5 border border-gray-200 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
+            <BookOpen size={15} /> Kurulum Kılavuzu
+          </button>
+          <button onClick={() => setShowAdd(true)}
+            className="flex items-center gap-1.5 bg-brand text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-dark transition-colors">
+            <Plus size={15} /> Yeni Cihaz
+          </button>
+        </div>
       </div>
 
       {/* Add form */}

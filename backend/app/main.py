@@ -57,6 +57,11 @@ app.include_router(router)
 # Serve uploaded media files
 app.mount("/media", StaticFiles(directory=UPLOAD_DIR), name="media")
 
+# Serve agent download files
+AGENT_DIR = "/app/agent_dist"
+if os.path.isdir(AGENT_DIR):
+    app.mount("/agent", StaticFiles(directory=AGENT_DIR), name="agent")
+
 
 @app.websocket("/ws/device/{device_id}")
 async def ws_device(websocket: WebSocket, device_id: str):
